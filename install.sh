@@ -6,10 +6,6 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-# Change Debian to SID Branch
-cp /etc/apt/sources.list /etc/apt/sources.list.bak
-cp sources.list /etc/apt/sources.list
-
 username=$(id -u -n 1000)
 builddir=$(pwd)
 
@@ -38,17 +34,19 @@ mv /home/$username/.config/sddm.conf /etc/sddm.conf
 # Installing sugar-candy dependencies
 nala install libqt5svg5 qml-module-qtquick-controls qml-module-qtquick-controls2 -y
 # Installing Essential Programs 
-nala install feh bspwm sxhkd kitty rofi polybar picom thunar lxpolkit x11-xserver-utils unzip yad wget pulseaudio pavucontrol -y
+nala install feh bspwm sxhkd kitty rofi polybar lxappearance picom thunar lxpolkit x11-xserver-utils unzip yad wget pulseaudio pavucontrol -y
 # Installing Other less important Programs
-nala install neofetch flameshot psmisc mangohud vim lxappearance papirus-icon-theme fonts-noto-color-emoji sddm -y
+nala install neofetch psmisc papirus-icon-theme fonts-noto-color-emoji ttf-mscorefonts-installer sddm -y
 
-# Download Nordic Theme
+# Download Sweet Theme
 cd /usr/share/themes/
-git clone https://github.com/EliverLara/Nordic.git
+wget https://github.com/EliverLara/Sweet/releases/download/v4.0/Sweet-Dark-v40.zip
+unzip Sweet-Dark-v40.zip
+rm -r Sweet-Dark-v40.zip
 
 # Installing fonts
 cd $builddir 
-nala install fonts-font-awesome
+nala install fonts-font-awesome -y
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
 unzip FiraCode.zip -d /home/$username/.fonts
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/Meslo.zip
@@ -61,19 +59,15 @@ fc-cache -vf
 # Removing zip Files
 rm ./FiraCode.zip ./Meslo.zip
 
-# Install Nordzy cursor
-git clone https://github.com/alvatip/Nordzy-cursors
-cd Nordzy-cursors
-./install.sh
-cd $builddir
-rm -rf Nordzy-cursors
+# Install Sweet cursor
+tar -xvf Sweet-cursors.tar.xz
+mv Sweet-cursors /usr/share/icons
+rm -r Sweet-cursors.tar.xz
 
-# Install brave-browser
-nala install apt-transport-https curl -y
-curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | tee /etc/apt/sources.list.d/brave-browser-release.list
-nala update
-nala install brave-browser -y
+# Install chrome
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install ./google-chrome-stable_current_amd64.deb -y
+rm -r google-chrome-stable_current_amd64.deb
 
 # Enable graphical login and change target from CLI to GUI
 systemctl enable sddm
