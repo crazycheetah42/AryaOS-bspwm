@@ -21,22 +21,19 @@ cd $builddir
 mkdir -p /home/$username/.config
 mkdir -p /home/$username/.fonts
 mkdir -p /home/$username/Pictures
-mkdir -p /usr/share/sddm/themes
 cp .Xresources /home/$username
 cp .Xnord /home/$username
 cp -R dotconfig/* /home/$username/.config/
-cp bg.jpg /home/$username/Pictures/
+cp background.jpg /home/$username/Pictures/
 mv user-dirs.dirs /home/$username/.config
 chown -R $username:$username /home/$username
-tar -xzvf sugar-candy.tar.gz -C /usr/share/sddm/themes
-mv /home/$username/.config/sddm.conf /etc/sddm.conf
 
 # Installing sugar-candy dependencies
 nala install libqt5svg5 qml-module-qtquick-controls qml-module-qtquick-controls2 -y
 # Installing Essential Programs 
-nala install feh bspwm sxhkd kitty rofi polybar lxappearance picom thunar lxpolkit x11-xserver-utils unzip yad wget pulseaudio pavucontrol -y
+nala install feh bspwm sxhkd kitty rofi polybar lxappearance picom thunar curl python3-pip lxpolkit x11-xserver-utils unzip yad wget pulseaudio pavucontrol -y
 # Installing Other less important Programs
-nala install neofetch psmisc papirus-icon-theme fonts-noto-color-emoji ttf-mscorefonts-installer sddm -y
+nala install neofetch psmisc papirus-icon-theme fonts-noto-color-emoji gdm3 -y
 
 # Download Sweet Theme
 cd /usr/share/themes/
@@ -60,6 +57,7 @@ fc-cache -vf
 rm ./FiraCode.zip ./Meslo.zip
 
 # Install Sweet cursor
+cd $builddir
 tar -xvf Sweet-cursors.tar.xz
 mv Sweet-cursors /usr/share/icons
 rm -r Sweet-cursors.tar.xz
@@ -70,14 +68,8 @@ sudo apt install ./google-chrome-stable_current_amd64.deb -y
 rm -r google-chrome-stable_current_amd64.deb
 
 # Enable graphical login and change target from CLI to GUI
-systemctl enable sddm
+systemctl enable gdm3
 systemctl set-default graphical.target
-
-# Beautiful bash
-git clone https://github.com/ChrisTitusTech/mybash
-cd mybash
-bash setup.sh
-cd $builddir
 
 # Polybar configuration
 bash scripts/changeinterface
